@@ -1,0 +1,15 @@
+{
+  "FolderOrderSettings": [
+    {"name":"Extensions","order":14,"path":"folders/Extensions.yy",},
+    {"name":"Notes","order":13,"path":"folders/Notes.yy",},
+    {"name":"Objects","order":9,"path":"folders/Objects.yy",},
+    {"name":"Rooms","order":10,"path":"folders/Rooms.yy",},
+    {"name":"Scripts","order":5,"path":"folders/Scripts.yy",},
+    {"name":"example","order":1,"path":"folders/Scripts/example.yy",},
+    {"name":"util","order":4,"path":"folders/Scripts/util.yy",},
+  ],
+  "ResourceOrderSettings": [
+    {"name":"get_time_readable","order":1,"path":"scripts/get_time_readable/get_time_readable.yy",},
+    {"name":"create_server","order":2,"path":"scripts/create_server/create_server.yy",},
+  ],
+}
