@@ -1,11 +1,11 @@
 {
   "resourceType": "GMScript",
   "resourceVersion": "1.0",
-  "name": "log",
+  "name": "Route",
   "isCompatibility": false,
   "isDnD": false,
   "parent": {
-    "name": "util",
-    "path": "folders/Scripts/util.yy",
+    "name": "types",
+    "path": "folders/Scripts/types.yy",
   },
 }
