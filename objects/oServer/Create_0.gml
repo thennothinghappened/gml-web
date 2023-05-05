@@ -5,7 +5,7 @@ draw_enable_drawevent(false);
 
 server = new GMServer();
 
-server.use(server.json());
+server.use(, server.json());
 
 server.get("/test", function(req, res, next) {
 	res.send("WHAT");

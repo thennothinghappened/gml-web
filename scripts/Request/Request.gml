@@ -15,4 +15,8 @@ function Request(path, http_method, http_version, ip, headers, body = undefined)
 	/// @ignore
 	self._body = body;
 	self.body = {};
+	
+	static type = function () {
+		return self.headers.type();
+	}
 }

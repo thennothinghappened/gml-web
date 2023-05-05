@@ -127,9 +127,12 @@ function GMServer(debug = true) constructor {
 	/// @desc JSON body parser, app.use this to support JSON parsing
 	static json = function () {
 		return function (req, res, next) {
-			if (string_starts_with(req.type(), "application/json")) {
-				req.body = json_parse(req._body);
+			if (req._body != undefined) {
+				if (string_starts_with(req.type(), "application/json")) {
+					req.body = json_parse(req._body);
+				}
 			}
+			
 			next(req, res);
 		}
 	}

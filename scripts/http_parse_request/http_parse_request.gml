@@ -25,7 +25,7 @@ function http_parse_request(buf, ip){
 	
 	// The only methods which have bodies all start with P!
 	if (string_starts_with(http_method, "P")) {
-		body = string_join("", _req);
+		body = array_join("", _req);
 	}
 	
 	return new Request(path, http_method, http_version, ip, new Headers(headers), body);

@@ -47,7 +47,7 @@ function Headers(headers = []) constructor {
 	
 	/// @desc Get the Content-Type
 	static type = function () {
-		get("Content-Type");
+		return get("Content-Type");
 	}
 	
 	static toString = function () {

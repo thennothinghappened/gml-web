@@ -16,6 +16,7 @@
     {"name":"get_time_readable","order":1,"path":"scripts/get_time_readable/get_time_readable.yy",},
     {"name":"Headers","order":2,"path":"scripts/Headers/Headers.yy",},
     {"name":"http_build_response","order":2,"path":"scripts/http_build_response/http_build_response.yy",},
+    {"name":"array_join","order":3,"path":"scripts/array_join/array_join.yy",},
     {"name":"http_status_codes","order":1,"path":"scripts/http_status_codes/http_status_codes.yy",},
     {"name":"Response","order":1,"path":"scripts/Response/Response.yy",},
     {"name":"Pair","order":6,"path":"scripts/Pair/Pair.yy",},
