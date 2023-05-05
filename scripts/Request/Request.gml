@@ -12,6 +12,7 @@ function Request(path, http_method, http_version, ip, headers, body = undefined)
 	self.http_method = http_method;
 	self.http_version = http_version;
 	self.headers = headers;
+	self.ip = ip;
 	/// @ignore
 	self._body = body;
 	self.body = {};
