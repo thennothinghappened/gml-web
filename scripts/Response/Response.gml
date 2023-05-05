@@ -61,6 +61,8 @@ function Response(socket, http_version, send_body = true) constructor {
 			send(data);
 		}
 		
+		// Remove the excess buffer size we've accumulated in writes
+		buffer_resize(self.body, buffer_tell(self.body));
 		self.headers._set_content_length(self.body);
 		
 		var buf = http_build_response(self.http_version, self.http_status, self.headers, (self.send_body ? self.body : undefined));
