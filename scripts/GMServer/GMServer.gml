@@ -106,4 +106,11 @@ function GMServer(debug = true) constructor {
 	static use = function (path = undefined, callback) {
 		self._router.use(path, callback);
 	}
+	
+	/// @desc Add GET middleware to the app
+	/// @param {string|undefined} path
+	/// @param {function|array<function>} callback
+	static get = function (path, callback) {
+		self._router,get(path, callback);
+	}
 }

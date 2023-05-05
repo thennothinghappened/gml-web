@@ -84,37 +84,19 @@ function Route(path) constructor {
 	
 	/// @desc Add middleware(s) to the route
 	/// @param {function|array<function>} callback
-	static use = function (callback) {
+	/// @param {string|undefined} http_method
+	static use = function (callback, http_method = undefined) {
 		if (is_array(callback)) {
 			array_foreach(callback, function(cb) { use(cb); });
 		} else {
-			array_push(self.stack, new Layer(undefined, callback, self));
+			array_push(self.stack, new Layer(undefined, callback, self, http_method));
 		}
 		
-	}
-	
-	/// @ignore
-	/// @param {string} http_method
-	/// @param {function} callback
-	static _method = function (http_method, callback) {
-		
-		self.use(method(
-			{ callback: callback, http_method: http_method },
-			function (req, res, next) {
-				
-				if (req.http_method != http_method) {
-					return next(req, res, next);
-				}
-			
-				callback(req, res, next);
-			
-			})
-		);
 	}
 	
 	/// @desc Add a handler for a GET request
 	/// @param {function|array<function>} callback
 	static get = function (callback) {
-		_method("GET", callback);
+		use(callback, "GET");
 	}
 }

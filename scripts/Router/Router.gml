@@ -77,12 +77,20 @@ function Router(path) constructor {
 	/// @desc Add middleware(s) to the router
 	/// @param {string|undefined} path
 	/// @param {function|array<function>} callback
-	static use = function (path = undefined, callback) {
+	/// @param {string|undefined} http_method
+	static use = function (path = undefined, callback, http_method = undefined) {
 		if (is_array(callback)) {
 			array_foreach(callback, function(cb) { use(cb); });
 		} else {
-			array_push(self.stack, new Layer(path, callback, self));
+			array_push(self.stack, new Layer(path, callback, self, http_method));
 		}
+	}
+	
+	/// @desc Add GET middleware to the router
+	/// @param {string|undefined} path
+	/// @param {function|array<function>} callback
+	static get = function (path, callback) {
+		use(path, callback, "GET");
 	}
 	
 }
