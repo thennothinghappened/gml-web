@@ -38,16 +38,11 @@ function Route(path) constructor {
 	/// @param {Function} _done
 	function dispatch(req, res, _done) {
 		
-		static stack_size;
-		static index;
-		static done;
-		
-		stack_size = array_length(self.stack);
-		index = 0;
-		done = _done;
-		
-		next(req, res);
-		
+		method({
+			stack_size: array_length(self.stack),
+			index: 0,
+			done: _done
+		}, next)(req, res);
 		
 		/// @param {Struct.Request} req
 		/// @param {Struct.Response} res
@@ -65,11 +60,54 @@ function Route(path) constructor {
 			}
 			
 			if (_layer.http_method != undefined && _layer.http_method != req.http_method) {
-				return next(req, res, err);
+				return method({
+					stack_size: stack_size,
+					index: index,
+					done: done
+				}, next)(req, res, err);
 			}
 			
-			_layer.handle_request(req, res, next);
+			_layer.handle_request(req, res, method({
+				stack_size: stack_size,
+				index: index,
+				done: done
+			}, next));
 			
 		}
+	}
+	
+	/// @desc Add middleware(s) to the route
+	/// @param {function|array<function>} callback
+	function use(callback) {
+		if (is_array(callback)) {
+			array_foreach(callback, function(cb) { use(cb); });
+		} else {
+			array_push(self.stack, new Layer(undefined, callback, self));
+		}
+		
+	}
+	
+	/// @ignore
+	/// @param {string} http_method
+	/// @param {function} callback
+	function _method(http_method, callback) {
+		
+		self.methods[$ http_method] = true;
+		
+		use(function (req, res, next) {
+			
+			if (!req.http_method == http_method) {
+				return next(req, res, next);
+			}
+			
+			callback(req, res);
+			
+		});
+	}
+	
+	/// @desc Add a handler for a GET request
+	/// @param {function|array<function>} callback
+	function get(callback) {
+		_method("GET", callback);
 	}
 }

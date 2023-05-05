@@ -11,13 +11,11 @@ function Router(path) constructor {
 	/// @param {Function} _done
 	function dispatch(req, res, _done) {
 		
-		static stack_size;
-		static index;
-		static done;
-		
-		stack_size = array_length(self.stack);
-		index = 0;
-		done = _done;
+		method({
+			stack_size: array_length(self.stack),
+			index: 0,
+			done: _done
+		}, next)(req, res);
 		
 		next(req, res);
 		
@@ -49,7 +47,11 @@ function Router(path) constructor {
 				return done(err);
 			}
 			
-			_layer.handle_request(req, res, next);
+			_layer.handle_request(req, res, method({
+				stack_size: stack_size,
+				index: index,
+				done: done
+			}, next));
 			
 		}
 	}
@@ -60,7 +62,7 @@ function Router(path) constructor {
 	function route(path) {
 		var _route = new Route(path);
 		var _layer = new Layer(
-			path, _route.handle, _route
+			path, _route.dispatch, _route
 		);
 		
 		array_push(self.stack, _layer);
