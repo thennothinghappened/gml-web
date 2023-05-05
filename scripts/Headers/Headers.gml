@@ -3,7 +3,9 @@
 function Headers(headers = []) constructor {
 	
 	/// @ignore
-	self._headers = {};
+	self._headers = {
+		"Content-Type": "text/html" // default to HTML content
+	};
 	
 	// add the initial headers
 	var headers_len = array_length(headers);
@@ -11,15 +13,41 @@ function Headers(headers = []) constructor {
 		self._headers[$ headers[i].first] = headers[i].second;
 	}
 	
+	/// @desc Get a header value by its name
+	/// @param {string} header
+	/// @return {string|undefined}
+	static get = function (header) {
+		return self._headers[$ header];
+	}
+	
 	/// @desc Add or modify a header
-	/// @param {Id.Header} header
-	function add(header) {
+	/// @param {Struct.Pair} header
+	static set = function (header) {
 		self._headers[$ header.first] = header.second;
 	}
 	
 	/// @desc Remove a header
 	/// @param {string} header
-	function remove(header) {
+	static remove = function (header) {
 		delete self._headers[$ header];
+	}
+	
+	/// @ignore
+	/// @desc Set the Content-Length based on the size of body buffer
+	/// @param {Id.Buffer} body
+	static _set_content_length = function (body) {
+		set(new Pair("Content-Length", string(buffer_get_size(body))));
+	}
+	
+	static toString = function () {
+		var str = "";
+		var names = struct_get_names(self._headers);
+		var names_len = array_length(names);
+		
+		for (var i = 0; i < names_len; i ++) {
+			str += $"{names[i]}: {self._headers[$ names[i]]}\r\n";
+		}
+		
+		return str;
 	}
 }

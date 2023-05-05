@@ -1,11 +1,11 @@
 {
   "resourceType": "GMScript",
   "resourceVersion": "1.0",
-  "name": "example_server",
+  "name": "log",
   "isCompatibility": false,
   "isDnD": false,
   "parent": {
-    "name": "example",
-    "path": "folders/Scripts/example.yy",
+    "name": "util",
+    "path": "folders/Scripts/util.yy",
   },
 }

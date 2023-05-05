@@ -32,49 +32,50 @@ function Route(path) constructor {
 		return methods;
 	}
 	
-	/// @ignore
-	/// @param {Struct.Request} req
-	/// @param {Struct.Response} res
-	/// @param {Struct.Exception|undefined} err
-	static next = function (req, res, err = undefined) {
-			
-		if (err != undefined) {
-			return done(req, res, err);
-		}
-			
-			
-		var _layer = stack[index++];
-		if (_layer == undefined) {
-			return done(req, res, err);
-		}
-			
-		if (_layer.http_method != undefined && _layer.http_method != req.http_method) {
-			return method({
-				stack_size: stack_size,
-				index: index,
-				done: done
-			}, next)(req, res, err);
-		}
-			
-		_layer.handle_request(req, res, method({
-			stack_size: stack_size,
-			stack: self.stack,
-			next: next,
-			index: index,
-			done: done
-		}, next));
-			
-	}
-	
 	/// @desc Handle the route if its ours, run through the stack and finish.
 	/// @param {Struct.Request} req
 	/// @param {Struct.Response} res
 	/// @param {Function} _done
-	static dispatch = function (req, res, _done) {
+	dispatch = function (req, res, _done) {
+		
+		/// @param {Struct.Request} req
+		/// @param {Struct.Response} res
+		/// @param {Struct.Exception|undefined} err
+		static next = function (req, res, err = undefined) {
+			
+			if (err != undefined) {
+				return done(req, res, err);
+			}
+			
+			
+			var _layer = stack[index++];
+			if (_layer == undefined) {
+				return done(req, res, err);
+			}
+			
+			if (_layer.http_method != undefined && _layer.http_method != req.http_method) {
+				return method({
+					stack_size: stack_size,
+					index: index,
+					done: done
+				}, next)(req, res, err);
+			}
+			
+			_layer.handle_request(req, res, method({
+				stack_size: stack_size,
+				stack: stack,
+				next: next,
+				index: index,
+				done: done
+			}, next));
+			
+		}
+		
+		var stack = self.stack;
 		
 		method({
-			stack_size: array_length(self.stack),
-			stack: self.stack,
+			stack_size: array_length(stack),
+			stack: stack,
 			next: next,
 			index: 0,
 			done: _done
@@ -97,17 +98,18 @@ function Route(path) constructor {
 	/// @param {function} callback
 	static _method = function (http_method, callback) {
 		
-		self.methods[$ http_method] = true;
-		
-		use(function (req, res, next) {
+		self.use(method(
+			{ callback: callback, http_method: http_method },
+			function (req, res, next) {
+				
+				if (req.http_method != http_method) {
+					return next(req, res, next);
+				}
 			
-			if (!req.http_method == http_method) {
-				return next(req, res, next);
-			}
+				callback(req, res, next);
 			
-			callback(req, res);
-			
-		});
+			})
+		);
 	}
 	
 	/// @desc Add a handler for a GET request

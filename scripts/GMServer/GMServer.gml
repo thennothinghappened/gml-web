@@ -9,47 +9,6 @@ function GMServer(debug = true) constructor {
 	#region debug
 	
 	/// @ignore
-	static log_levels = ["debug", "info", "error", "fatal"];
-
-	/// @ignore
-	/// @param {string} msg Message
-	/// @param {real} level Log level (0 <-> 3)
-	function __log_format__(msg, level) {
-		return $"[{get_datetime_readable()}] [{log_levels[level]}] {msg}";
-	}
-
-	/// @ignore
-	/// @param {string} msg Message
-	/// @return {bool}
-	function __debug__(msg) {
-		show_debug_message(__log_format__(msg, 0));
-		return true;
-	}
-
-	/// @ignore
-	/// @param {string} msg Message
-	/// @return {bool}
-	function __info__(msg) {
-		show_debug_message(__log_format__(msg, 1));
-		return true;
-	}
-	
-	/// @ignore
-	/// @param {string} msg Message
-	/// @return {bool}
-	function __error__(msg) {
-		show_debug_message(__log_format__(msg, 2));
-		return false;
-	}
-
-	/// @ignore
-	/// @param {string} msg Message
-	function __fatal__(msg) {
-		show_debug_message(__log_format__(msg, 3));
-		throw "FATAL! " + msg;
-	}
-	
-	/// @ignore
 	/// @desc Complains if the server is running
 	/// @param {string} complaint
 	/// @param {bool} fatal
@@ -101,16 +60,19 @@ function GMServer(debug = true) constructor {
 	function handle(socket, ip, data) {
 		try {
 			var req = http_parse_request(data);
-			var res = new Response();
+			var res = new Response(socket, req.http_version, req.http_method != "HEAD" && req.http_method != "OPTIONS");
 			
-			dispatch(req, res, method({ socket: socket }, function() {
-				var body = "<html>hi!</html>";
-				var str = $"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: {string_byte_length(body)}\r\n\r\n{body}";
-				var buf = buffer_create(string_byte_length(str), buffer_fixed, 1);
-				buffer_write(buf, buffer_text, str);
+			dispatch(req, res, method({ debug: debug }, function(req, res, err) {
+				if (err != undefined) {
+					return res
+						.status(HTTP_CODE.INTERNAL_SERVER_ERROR)
+						.finish($"<h1>500: Internal Server Error</h1>{debug ? $"GML Error: {err.longMessage}" : ""}");
+				}
 				
-				network_send_raw(socket, buf, buffer_get_size(buf));
-				buffer_delete(buf);
+				// Our 404 handler. If we made our way here, then we mustn't have hit any actual pages.
+				return res
+					.status(HTTP_CODE.NOT_FOUND)
+					.finish("<h1>404: Not Found</h1>");
 			}));
 			
 		} catch(e) {

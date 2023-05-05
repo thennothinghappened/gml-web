@@ -6,9 +6,10 @@ draw_enable_drawevent(false);
 server = new GMServer();
 
 server.route("/test")
-	.get(function (req, res) {
-		show_debug_message(req.url);
+	.get(function (req, res, next) {
+		res.finish("<h1>MWUHAHAHAHA</h1>");
 	});
+
 
 function try_listening() {
 	try {

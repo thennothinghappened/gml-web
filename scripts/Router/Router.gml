@@ -18,7 +18,7 @@ function Router(path) constructor {
 			
 			// Later allow custom error handler. f\For now we jump to the end.
 			if (err != undefined) {
-				return done(err);
+				return done(req, res, err);
 			}
 			
 			var _layer;
@@ -36,20 +36,24 @@ function Router(path) constructor {
 			}
 			
 			if (!_match) {
-				return done(err);
+				return done(req, res, err);
 			}
 			
 			_layer.handle_request(req, res, method({
 				stack_size: stack_size,
+				stack: stack,
+				next: next,
 				index: index,
 				done: done
 			}, next));
 			
 		}
 		
+		var stack = self.stack;
+		
 		method({
-			stack_size: array_length(self.stack),
-			stack: self.stack,
+			stack_size: array_length(stack),
+			stack: stack,
 			next: next,
 			index: 0,
 			done: _done
@@ -68,9 +72,6 @@ function Router(path) constructor {
 		array_push(self.stack, _layer);
 		return _route;
 	}
-	
-	
-	
 	
 	
 }
