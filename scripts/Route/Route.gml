@@ -56,6 +56,8 @@ function Route(path) constructor {
 			if (_layer.http_method != undefined && _layer.http_method != req.http_method) {
 				return method({
 					stack_size: stack_size,
+					stack: stack,
+					next: next,
 					index: index,
 					done: done
 				}, next)(req, res, err);
