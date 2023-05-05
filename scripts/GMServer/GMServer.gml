@@ -13,7 +13,7 @@ function GMServer(debug = true) constructor {
 	/// @param {string} complaint
 	/// @param {bool} fatal
 	/// @returns {bool}
-	function __check_running_complain__(complaint, fatal = true) {
+	static __check_running_complain__ = function (complaint, fatal = true) {
 		if (self.__server__ != undefined) {
 			var _complaint = "Tried to " + complaint + " on server while it was already running!";
 		
@@ -28,7 +28,7 @@ function GMServer(debug = true) constructor {
 	/// @desc Start the server. Should be run after any middleware has been added.
 	/// @param {real} port
 	/// @return {bool} Was successful
-	function listen(port = 8080, max_clients = 10) {
+	static listen = function (port = 8080, max_clients = 10) {
 		if (self._server != undefined) {
 			return __error__("Tried to start a server when it was already running!");
 		}
@@ -44,7 +44,7 @@ function GMServer(debug = true) constructor {
 	}
 
 	/// @desc Stop the server, cleans up the socket.
-	function stop() {
+	static stop = function () {
 		if (self._server != undefined) {
 			__info__("Stopping server...");
 			network_destroy(self._server);	
@@ -57,7 +57,7 @@ function GMServer(debug = true) constructor {
 	/// @param {Id.Socket} socket
 	/// @param {string} ip
 	/// @param {Id.Buffer} data
-	function handle(socket, ip, data) {
+	static handle = function (socket, ip, data) {
 		try {
 			var req = http_parse_request(data, ip);
 			var res = new Response(socket, req.http_version, req.http_method != "HEAD" && req.http_method != "OPTIONS");
@@ -89,14 +89,14 @@ function GMServer(debug = true) constructor {
 	/// @param {Struct.Request} req
 	/// @param {Struct.Response} res
 	/// @param {function} done
-	function dispatch(req, res, done) {
+	static dispatch = function (req, res, done) {
 		_router.dispatch(req, res, done);
 	}
 	
 	/// @desc Creates a new route and returns it for chaining methods
 	/// @param {string} path
 	/// @returns {Struct.Route}
-	function route(path) {
+	static route = function (path) {
 		return self._router.route(path);
 	}
 
