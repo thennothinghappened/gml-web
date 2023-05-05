@@ -12,6 +12,10 @@ function Router(path) constructor {
 	/// @param {Function} _done
 	static dispatch = function (req, res, _done) {
 		
+		if (!string_starts_with(req.path, self.path)) {
+			_done(req, res);
+		}
+		
 		/// @param {Struct.Request} req
 		/// @param {Struct.Response} res
 		/// @param {Struct.Exception|undefined} err
@@ -84,6 +88,7 @@ function Router(path) constructor {
 		} else {
 			array_push(self.stack, new Layer(path, callback, self, http_method));
 		}
+		return self;
 	}
 	
 	/// @desc Add GET middleware to the router
@@ -91,6 +96,14 @@ function Router(path) constructor {
 	/// @param {function|array<function>} callback
 	static get = function (path, callback) {
 		use(path, callback, "GET");
+		return self;
 	}
 	
+	/// @desc Add POST middleware to the router
+	/// @param {string|undefined} path
+	/// @param {function|array<function>} callback
+	static post = function (path, callback) {
+		use(path, callback, "POST");
+		return self;
+	}
 }

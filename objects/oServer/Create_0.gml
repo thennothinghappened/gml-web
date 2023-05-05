@@ -5,14 +5,19 @@ draw_enable_drawevent(false);
 
 server = new GMServer();
 
+server.use(server.json());
+
 server.use("/test", function(req, res, next) {
 	res.send("WHAT");
 	next(req, res);
 });
 
 server.route("/test")
-	.get(function (req, res, next) {
+	.get(function(req, res) {
 		res.finish("<h1>MWUHAHAHAHA</h1>");
+	})
+	.post(function (req, res) {
+		res.json(req.body);
 	});
 
 

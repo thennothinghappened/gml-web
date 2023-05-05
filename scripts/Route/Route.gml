@@ -91,6 +91,7 @@ function Route(path) constructor {
 		} else {
 			array_push(self.stack, new Layer(undefined, callback, self, http_method));
 		}
+		return self;
 		
 	}
 	
@@ -98,5 +99,13 @@ function Route(path) constructor {
 	/// @param {function|array<function>} callback
 	static get = function (callback) {
 		use(callback, "GET");
+		return self;
+	}
+	
+	/// @desc Add a handler for a POST request
+	/// @param {function|array<function>} callback
+	static post = function (callback) {
+		use(callback, "POST");
+		return self;
 	}
 }

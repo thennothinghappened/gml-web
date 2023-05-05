@@ -17,7 +17,7 @@ function http_build_response(http_version, http_status, headers, body = undefine
 	}
 	
 	// our response has a body
-	headers_string += "\r\n\r\n";
+	headers_string += "\r\n";
 	
 	var buf = buffer_create(
 		string_byte_length(headers_string) + buffer_get_size(body), buffer_fixed, 1
@@ -26,7 +26,7 @@ function http_build_response(http_version, http_status, headers, body = undefine
 	buffer_write(buf, buffer_text, headers_string);
 	
 	// copy the body buffer into the shared buffer of the headers + body right after the end of the headers.
-	buffer_copy(body, 0, buffer_get_size(body), buf, string_byte_length(headers_string) + 1);
+	buffer_copy(body, 0, buffer_get_size(body), buf, string_byte_length(headers_string));
 	
 	return buf;
 }

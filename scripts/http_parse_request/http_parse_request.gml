@@ -7,7 +7,7 @@ function http_parse_request(buf, ip){
 	
 	// Separate headers from body
 	var _req = string_split(_text, "\r\n\r\n");
-	var _headers = string_split(_req[0], "\r\n");
+	var _headers = string_split(array_shift(_req), "\r\n");
 	
 	// HTTP method string & path
 	var _method_string = string_split(array_shift(_headers), " ");
@@ -21,7 +21,14 @@ function http_parse_request(buf, ip){
 		return new Pair(split[0], split[1]);
 	});
 	
-	return new Request(path, http_method, http_version, ip, new Headers(headers));
+	var body = undefined;
+	
+	// The only methods which have bodies all start with P!
+	if (string_starts_with(http_method, "P")) {
+		body = string_join("", _req);
+	}
+	
+	return new Request(path, http_method, http_version, ip, new Headers(headers), body);
 }
 
 /*

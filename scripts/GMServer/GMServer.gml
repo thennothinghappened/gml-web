@@ -105,12 +105,32 @@ function GMServer(debug = true) constructor {
 	/// @param {function|array<function>} callback
 	static use = function (path = undefined, callback) {
 		self._router.use(path, callback);
+		return self;
 	}
 	
 	/// @desc Add GET middleware to the app
 	/// @param {string|undefined} path
 	/// @param {function|array<function>} callback
 	static get = function (path, callback) {
-		self._router,get(path, callback);
+		self._router.get(path, callback);
+		return self;
+	}
+	
+	/// @desc Add POST middleware to the app
+	/// @param {string|undefined} path
+	/// @param {function|array<function>} callback
+	static post = function (path, callback) {
+		self._router.post(path, callback);
+		return self;
+	}
+	
+	/// @desc JSON body parser, app.use this to support JSON parsing
+	static json = function () {
+		return function (req, res, next) {
+			if (string_starts_with(req.type(), "application/json")) {
+				req.body = json_parse(req._body);
+			}
+			next(req, res);
+		}
 	}
 }

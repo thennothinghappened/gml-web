@@ -69,4 +69,11 @@ function Response(socket, http_version, send_body = true) constructor {
 		buffer_delete(buf);
 		
 	}
+	
+	/// @desc Finish the request with JSON data.
+	/// @param {Struct} data
+	static json = function (data) {
+		type("application/json");
+		finish(json_stringify(data));
+	}
 }
