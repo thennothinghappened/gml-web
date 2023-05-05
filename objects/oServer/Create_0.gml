@@ -7,7 +7,7 @@ server = new GMServer();
 
 server.use(server.json());
 
-server.use("/test", function(req, res, next) {
+server.get("/test", function(req, res, next) {
 	res.send("WHAT");
 	next(req, res);
 });
