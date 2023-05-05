@@ -8,8 +8,10 @@
  server = new GMServer();
 
  // middleware (blank 1st argument is global middleware)
- server.use(, function(req, res, next) {
-    res.send($"your IP is <b>{req.ip}</b> <br>");
+ server.get(, function(req, res, next) {
+    if (req.type() == "text/html") {
+        res.send($"your IP is <b>{req.ip}</b> <br>");
+    }
     next(req, res);
  });
  
