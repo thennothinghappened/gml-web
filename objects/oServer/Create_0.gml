@@ -5,6 +5,11 @@ draw_enable_drawevent(false);
 
 server = new GMServer();
 
+server.use("/test", function(req, res, next) {
+	res.send("WHAT");
+	next(req, res);
+});
+
 server.route("/test")
 	.get(function (req, res, next) {
 		res.finish("<h1>MWUHAHAHAHA</h1>");

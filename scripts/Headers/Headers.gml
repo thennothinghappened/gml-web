@@ -39,6 +39,12 @@ function Headers(headers = []) constructor {
 		set(new Pair("Content-Length", string(buffer_get_size(body))));
 	}
 	
+	/// @desc Set the Content-Type
+	/// @param {string} content_type
+	static _set_content_type = function (content_type) {
+		set(new Pair("Content-Type", content_type));
+	}
+	
 	static toString = function () {
 		var str = "";
 		var names = struct_get_names(self._headers);

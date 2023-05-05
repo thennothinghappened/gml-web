@@ -5,6 +5,7 @@ function Router(path) constructor {
 	// Each layer gets a chance to run through its code, pass to the next, or stop execution.
 	self.stack = [];
 	
+	/// @ignore
 	/// @desc Handle the route if it belongs to us
 	/// @param {Struct.Request} req
 	/// @param {Struct.Response} res
@@ -73,5 +74,15 @@ function Router(path) constructor {
 		return _route;
 	}
 	
+	/// @desc Add middleware(s) to the router
+	/// @param {string|undefined} path
+	/// @param {function|array<function>} callback
+	static use = function (path = undefined, callback) {
+		if (is_array(callback)) {
+			array_foreach(callback, function(cb) { use(cb); });
+		} else {
+			array_push(self.stack, new Layer(path, callback, self));
+		}
+	}
 	
 }

@@ -1,6 +1,7 @@
 /// @param {Id.Buffer} buf
+/// @param {string} ip
 /// @returns {Struct.Request}
-function http_parse_request(buf){
+function http_parse_request(buf, ip){
 	
 	var _text = buffer_read(buf, buffer_text);
 	
@@ -20,7 +21,7 @@ function http_parse_request(buf){
 		return new Pair(split[0], split[1]);
 	});
 	
-	return new Request(path, http_method, http_version, new Headers(headers));
+	return new Request(path, http_method, http_version, ip, new Headers(headers));
 }
 
 /*

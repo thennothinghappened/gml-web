@@ -59,10 +59,13 @@ function GMServer(debug = true) constructor {
 	/// @param {Id.Buffer} data
 	function handle(socket, ip, data) {
 		try {
-			var req = http_parse_request(data);
+			var req = http_parse_request(data, ip);
 			var res = new Response(socket, req.http_version, req.http_method != "HEAD" && req.http_method != "OPTIONS");
 			
+			__info__($"({ip}) {req.http_method} {req.path}");
+			
 			dispatch(req, res, method({ debug: debug }, function(req, res, err) {
+				// Error handler
 				if (err != undefined) {
 					return res
 						.status(HTTP_CODE.INTERNAL_SERVER_ERROR)
@@ -97,10 +100,10 @@ function GMServer(debug = true) constructor {
 		return self._router.route(path);
 	}
 
-	/// @param {function} middleware
-	//function use(middleware) {
-//		if (__check_running_complain__("add middleware")) { return false; }
-//		self._router.use(middleware);
-//		
-//	}
+	/// @desc Add middleware(s) to the app
+	/// @param {string|undefined} path
+	/// @param {function|array<function>} callback
+	static use = function (path = undefined, callback) {
+		self._router.use(path, callback);
+	}
 }

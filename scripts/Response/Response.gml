@@ -28,6 +28,12 @@ function Response(socket, http_version, send_body = true) constructor {
 		self.headers.set(header);
 	}
 	
+	/// @desc Set the MIME type of the file
+	/// @param {string} mime_type
+	static type = function (mime_type) {
+		self.headers._set_content_type(mime_type);
+	}
+	
 	/// @desc Set HTTP status for the response
 	/// @param {Enum.HTTP_CODE} http_status
 	static status = function (http_status) {
@@ -50,7 +56,7 @@ function Response(socket, http_version, send_body = true) constructor {
 	
 	/// @desc Finish the request and optionally append some data.
 	/// @param {string|Id.Buffer|undefined} data
-	finish = function (data) {
+	static finish = function (data) {
 		if (data != undefined) {
 			send(data);
 		}

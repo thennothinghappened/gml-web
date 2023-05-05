@@ -8,7 +8,6 @@ function http_build_response(http_version, http_status, headers, body = undefine
 	
 	var headers_string = headers.toString();
 	headers_string = $"{http_version} {http_status} {global._HTTP_CODES[http_status]}\r\n" + headers_string;
-	__info__(headers_string)
 	
 	if (body == undefined) {
 		// our response has no body
