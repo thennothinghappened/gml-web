@@ -4,32 +4,32 @@ function Headers(headers = []) constructor {
 	
 	/// @ignore
 	self._headers = {
-		"Content-Type": "text/html" // default to HTML content
+		"content-type": "text/html" // default to HTML content
 	};
 	
 	// add the initial headers
 	var headers_len = array_length(headers);
 	for (var i = 0; i < headers_len; i ++) {
-		self._headers[$ headers[i].first] = headers[i].second;
+		self._headers[$ string_lower(headers[i].first)] = headers[i].second;
 	}
 	
 	/// @desc Get a header value by its name
 	/// @param {string} header
 	/// @return {string|undefined}
 	static get = function (header) {
-		return self._headers[$ header];
+		return self._headers[$ string_lower(header)];
 	}
 	
 	/// @desc Add or modify a header
 	/// @param {Struct.Pair} header
 	static set = function (header) {
-		self._headers[$ header.first] = header.second;
+		self._headers[$ string_lower(header.first)] = header.second;
 	}
 	
 	/// @desc Remove a header
 	/// @param {string} header
 	static remove = function (header) {
-		delete self._headers[$ header];
+		delete self._headers[$ string_lower(header)];
 	}
 	
 	/// @ignore
