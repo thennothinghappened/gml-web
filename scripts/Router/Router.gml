@@ -9,20 +9,12 @@ function Router(path) constructor {
 	/// @param {Struct.Request} req
 	/// @param {Struct.Response} res
 	/// @param {Function} _done
-	function dispatch(req, res, _done) {
-		
-		method({
-			stack_size: array_length(self.stack),
-			index: 0,
-			done: _done
-		}, next)(req, res);
-		
-		next(req, res);
+	static dispatch = function (req, res, _done) {
 		
 		/// @param {Struct.Request} req
 		/// @param {Struct.Response} res
 		/// @param {Struct.Exception|undefined} err
-		function next(req, res, err = undefined) {
+		static next = function (req, res, err = undefined) {
 			
 			// Later allow custom error handler. f\For now we jump to the end.
 			if (err != undefined) {
@@ -34,8 +26,8 @@ function Router(path) constructor {
 			
 			// find the next match
 			while (!_match && index < stack_size) {
-				_layer = self.stack[index++];
-				_match = _layer.match(req.url, req.http_method);
+				_layer = stack[index++];
+				_match = _layer.match(req.path, req.http_method);
 				
 				if (!_match) { 
 					continue;
@@ -54,12 +46,20 @@ function Router(path) constructor {
 			}, next));
 			
 		}
+		
+		method({
+			stack_size: array_length(self.stack),
+			stack: self.stack,
+			next: next,
+			index: 0,
+			done: _done
+		}, next)(req, res);
 	}
 	
 	/// @desc Creates a new routes and adds it to the stack
 	/// @param {string} path
 	/// @returns {Struct.Route}
-	function route(path) {
+	static route = function (path) {
 		var _route = new Route(path);
 		var _layer = new Layer(
 			path, _route.dispatch, _route

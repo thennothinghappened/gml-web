@@ -9,7 +9,7 @@ function Route(path) constructor {
 	/// @desc Returns whether this route can handle a method
 	/// @param {string} _http_method
 	/// @returns {bool}
-	function _handles_method(_http_method) {
+	static _handles_method = function (_http_method) {
 		var http_method = string_upper(_http_method);
 		
 		return (
@@ -22,7 +22,7 @@ function Route(path) constructor {
 	/// @ignore
 	/// @desc Get list of methods
 	/// @returns {array<string>}
-	function _options() {
+	static _options = function () {
 		var methods = struct_get_names(self.methods);
 		
 		if (array_contains(methods, "GET") && !array_contains(methods, "HEAD")) {
@@ -32,53 +32,58 @@ function Route(path) constructor {
 		return methods;
 	}
 	
+	/// @ignore
+	/// @param {Struct.Request} req
+	/// @param {Struct.Response} res
+	/// @param {Struct.Exception|undefined} err
+	static next = function (req, res, err = undefined) {
+			
+		if (err != undefined) {
+			return done(req, res, err);
+		}
+			
+			
+		var _layer = stack[index++];
+		if (_layer == undefined) {
+			return done(req, res, err);
+		}
+			
+		if (_layer.http_method != undefined && _layer.http_method != req.http_method) {
+			return method({
+				stack_size: stack_size,
+				index: index,
+				done: done
+			}, next)(req, res, err);
+		}
+			
+		_layer.handle_request(req, res, method({
+			stack_size: stack_size,
+			stack: self.stack,
+			next: next,
+			index: index,
+			done: done
+		}, next));
+			
+	}
+	
 	/// @desc Handle the route if its ours, run through the stack and finish.
 	/// @param {Struct.Request} req
 	/// @param {Struct.Response} res
 	/// @param {Function} _done
-	function dispatch(req, res, _done) {
+	static dispatch = function (req, res, _done) {
 		
 		method({
 			stack_size: array_length(self.stack),
+			stack: self.stack,
+			next: next,
 			index: 0,
 			done: _done
 		}, next)(req, res);
-		
-		/// @param {Struct.Request} req
-		/// @param {Struct.Response} res
-		/// @param {Struct.Exception|undefined} err
-		function next(req, res, err = undefined) {
-			
-			if (err != undefined) {
-				return done(req, res, err);
-			}
-			
-			
-			var _layer = self.stack[index++];
-			if (_layer == undefined) {
-				return done(req, res, err);
-			}
-			
-			if (_layer.http_method != undefined && _layer.http_method != req.http_method) {
-				return method({
-					stack_size: stack_size,
-					index: index,
-					done: done
-				}, next)(req, res, err);
-			}
-			
-			_layer.handle_request(req, res, method({
-				stack_size: stack_size,
-				index: index,
-				done: done
-			}, next));
-			
-		}
 	}
 	
 	/// @desc Add middleware(s) to the route
 	/// @param {function|array<function>} callback
-	function use(callback) {
+	static use = function (callback) {
 		if (is_array(callback)) {
 			array_foreach(callback, function(cb) { use(cb); });
 		} else {
@@ -90,7 +95,7 @@ function Route(path) constructor {
 	/// @ignore
 	/// @param {string} http_method
 	/// @param {function} callback
-	function _method(http_method, callback) {
+	static _method = function (http_method, callback) {
 		
 		self.methods[$ http_method] = true;
 		
@@ -107,7 +112,7 @@ function Route(path) constructor {
 	
 	/// @desc Add a handler for a GET request
 	/// @param {function|array<function>} callback
-	function get(callback) {
+	static get = function (callback) {
 		_method("GET", callback);
 	}
 }

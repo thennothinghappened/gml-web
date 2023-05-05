@@ -1,13 +1,15 @@
 
 
 /// @desc An incoming HTTP request
-/// @param {string} url
+/// @param {string} path
 /// @param {string} http_method
+/// @param {string} http_version
 /// @param {Struct.Headers} headers HTTP headers
 /// @param {Id.Buffer} body HTTP body
-function Request(url, http_method, headers, body = undefined) constructor {
-	self.url = url;
+function Request(path, http_method, http_version, headers, body = undefined) constructor {
+	self.path = path;
 	self.http_method = http_method;
+	self.http_version = http_version;
 	self.headers = headers;
 	self.body = body;
 }

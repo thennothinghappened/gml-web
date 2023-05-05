@@ -15,7 +15,7 @@ function GMServer(debug = true) constructor {
 	/// @param {string} msg Message
 	/// @param {real} level Log level (0 <-> 3)
 	function __log_format__(msg, level) {
-		return "[" + get_datetime_readable() + "] [" + log_levels[level] + "] " + msg;
+		return $"[{get_datetime_readable()}] [{log_levels[level]}] {msg}";
 	}
 
 	/// @ignore
@@ -77,7 +77,11 @@ function GMServer(debug = true) constructor {
 		__debug__("Starting server");
 		self._server = network_create_server_raw(network_socket_tcp, port, max_clients);
 		
-		return __info__("Server listening on port " + string(self.port));;
+		if (self._server < 0) {
+			__fatal__("Failed to create the server!");
+		}
+		
+		return __info__($"Server listening on port {port}");;
 	}
 
 	/// @desc Stop the server, cleans up the socket.
@@ -91,11 +95,37 @@ function GMServer(debug = true) constructor {
 	}
 	
 	/// @desc Handle incoming packets in Async Networking event if they are ours
-	/// @param {Id.DsMap} data_map
-	function handle(data_map) {
-		if (data_map[? "socket"] != self._server) {
-			return;
+	/// @param {Id.Socket} socket
+	/// @param {string} ip
+	/// @param {Id.Buffer} data
+	function handle(socket, ip, data) {
+		try {
+			var req = http_parse_request(data);
+			var res = new Response();
+			
+			dispatch(req, res, method({ socket: socket }, function() {
+				var body = "<html>hi!</html>";
+				var str = $"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: {string_byte_length(body)}\r\n\r\n{body}";
+				var buf = buffer_create(string_byte_length(str), buffer_fixed, 1);
+				buffer_write(buf, buffer_text, str);
+				
+				network_send_raw(socket, buf, buffer_get_size(buf));
+				buffer_delete(buf);
+			}));
+			
+		} catch(e) {
+			__error__(e.longMessage);
 		}
+		
+		buffer_delete(data);
+	}
+	
+	/// @desc Dispatch a request into the server
+	/// @param {Struct.Request} req
+	/// @param {Struct.Response} res
+	/// @param {function} done
+	function dispatch(req, res, done) {
+		_router.dispatch(req, res, done);
 	}
 	
 	/// @desc Creates a new route and returns it for chaining methods
@@ -106,9 +136,9 @@ function GMServer(debug = true) constructor {
 	}
 
 	/// @param {function} middleware
-	function use(middleware) {
-		if (__check_running_complain__("add middleware")) { return false; }
-		
-		
-	}
+	//function use(middleware) {
+//		if (__check_running_complain__("add middleware")) { return false; }
+//		self._router.use(middleware);
+//		
+//	}
 }
