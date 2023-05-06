@@ -53,6 +53,11 @@ function GMServer(debug = true) constructor {
 		__info__("Server stopped.");
 	}
 	
+	/// @desc Gets whether the server is currently listening
+	static listening = function () {
+		return self._server != undefined;
+	}
+	
 	/// @desc Handle incoming packets in Async Networking event if they are ours
 	/// @param {Id.Socket} socket
 	/// @param {string} ip
