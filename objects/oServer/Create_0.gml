@@ -20,11 +20,13 @@ server.route("/test")
 		res.json(req.body);
 	});
 
-
 function try_listening() {
 	try {
 		server.listen(8080);
-	} catch (e) { server.stop(); alarm[0] = game_get_speed(gamespeed_fps); }
+	} catch (e) {
+		server.stop();
+		alarm[0] = game_get_speed(gamespeed_fps);
+	}
 }
 
 try_listening();
