@@ -55,8 +55,8 @@ function Headers(headers = []) constructor {
 		var names = struct_get_names(self._headers);
 		var names_len = array_length(names);
 		
-		for (var i = 0; i < names_len; i ++) {
-			str += $"{names[i]}: {self._headers[$ names[i]]}\r\n";
+		for (var i = 0; i < names_len; i ++) { // string replacement here is to fix sketchy YYC behaviour
+			str += $"{string_replace_all(names[i], "_", "-")}: {self._headers[$ names[i]]}\r\n";
 		}
 		
 		return str;
