@@ -1,30 +1,26 @@
+app = new GMServer();
 
-// disable window rendering
-application_surface_draw_enable(false);
-draw_enable_drawevent(false);
+counter = 0;
 
-server = new GMServer();
+get_counter = function(req, res) {
+	res.send($"<h1>Counter: {counter}</h1><br>");
+	res.finish("<form method=\"POST\"><input type=\"submit\" value=\"Increment\"></form>");
+}
 
-server.use(, server.json());
+increment_counter = function(req, res) {
+	counter ++;
+	get_counter(req, res);
+}
 
-server.get("/test", function(req, res, next) {
-	res.send("WHAT");
-	next(req, res);
-});
+app.get("/counter", get_counter);
+app.post("/counter", increment_counter);
 
-server.route("/test")
-	.get(function(req, res) {
-		res.finish("<h1>MWUHAHAHAHA</h1>");
-	})
-	.post(function (req, res) {
-		res.json(req.body);
-	});
 
 function try_listening() {
 	try {
-		server.listen(8080);
+		app.listen(8080);
 	} catch (e) {
-		server.stop();
+		app.stop();
 		alarm[0] = game_get_speed(gamespeed_fps);
 	}
 }

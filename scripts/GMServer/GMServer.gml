@@ -64,7 +64,7 @@ function GMServer(debug = true) constructor {
 	/// @param {Id.Buffer} data
 	static handle = function (socket, ip, data) {
 		try {
-			var req = http_parse_request(data, ip);
+			var req = http_parse_request(data, ip, self);
 			var res = new Response(socket, req.http_version, req.http_method != "HEAD" && req.http_method != "OPTIONS");
 			
 			__info__($"({ip}) {req.http_method} {req.path}");
@@ -72,6 +72,8 @@ function GMServer(debug = true) constructor {
 			dispatch(req, res, method({ debug: debug }, function(req, res, err) {
 				// Error handler
 				if (err != undefined) {
+					__error__(err.longMessage);
+					
 					return res
 						.status(HTTP_CODE.INTERNAL_SERVER_ERROR)
 						.finish($"<h1>500: Internal Server Error</h1>{debug ? $"GML Error: {err.longMessage}" : ""}");
@@ -121,11 +123,43 @@ function GMServer(debug = true) constructor {
 		return self;
 	}
 	
+	/// @desc Add HEAD middleware to the app
+	/// @param {string|undefined} path
+	/// @param {function|array<function>} callback
+	static head = function (path, callback) {
+		self._router.head(path, callback);
+		return self;
+	}
+	
 	/// @desc Add POST middleware to the app
 	/// @param {string|undefined} path
 	/// @param {function|array<function>} callback
 	static post = function (path, callback) {
 		self._router.post(path, callback);
+		return self;
+	}
+	
+	/// @desc Add PUT middleware to the app
+	/// @param {string|undefined} path
+	/// @param {function|array<function>} callback
+	static put = function (path, callback) {
+		self._router.put(path, callback);
+		return self;
+	}
+	
+	/// @desc Add PATCH middleware to the app
+	/// @param {string|undefined} path
+	/// @param {function|array<function>} callback
+	static patch = function (path, callback) {
+		self._router.patch(path, callback);
+		return self;
+	}
+	
+	/// @desc Add DELETE middleware to the app
+	/// @param {string|undefined} path
+	/// @param {function|array<function>} callback
+	static delete_ = function (path, callback) {
+		self._router.delete_(path, callback);
 		return self;
 	}
 	

@@ -38,6 +38,7 @@
     {"id":{"name":"http_status_codes","path":"scripts/http_status_codes/http_status_codes.yy",},},
     {"id":{"name":"Response","path":"scripts/Response/Response.yy",},},
     {"id":{"name":"Pair","path":"scripts/Pair/Pair.yy",},},
+    {"id":{"name":"http_remove_duplicate_slashes","path":"scripts/http_remove_duplicate_slashes/http_remove_duplicate_slashes.yy",},},
     {"id":{"name":"oServer","path":"objects/oServer/oServer.yy",},},
     {"id":{"name":"Router","path":"scripts/Router/Router.yy",},},
     {"id":{"name":"Request","path":"scripts/Request/Request.yy",},},

@@ -99,11 +99,43 @@ function Router(path) constructor {
 		return self;
 	}
 	
+	/// @desc Add HEAD middleware to the router
+	/// @param {string|undefined} path
+	/// @param {function|array<function>} callback
+	static head = function (path, callback) {
+		use(path, callback, "HEAD");
+		return self;
+	}
+	
 	/// @desc Add POST middleware to the router
 	/// @param {string|undefined} path
 	/// @param {function|array<function>} callback
 	static post = function (path, callback) {
 		use(path, callback, "POST");
+		return self;
+	}
+	
+	/// @desc Add PUT middleware to the router
+	/// @param {string|undefined} path
+	/// @param {function|array<function>} callback
+	static put = function (path, callback) {
+		use(path, callback, "PUT");
+		return self;
+	}
+	
+	/// @desc Add PATCH middleware to the router
+	/// @param {string|undefined} path
+	/// @param {function|array<function>} callback
+	static patch = function (path, callback) {
+		use(path, callback, "PATCH");
+		return self;
+	}
+	
+	/// @desc Add DELETE middleware to the router
+	/// @param {string|undefined} path
+	/// @param {function|array<function>} callback
+	static delete_ = function (path, callback) {
+		use(path, callback, "DELETE");
 		return self;
 	}
 }

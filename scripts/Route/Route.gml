@@ -53,7 +53,7 @@ function Route(path) constructor {
 				return done(req, res, err);
 			}
 			
-			if (_layer.http_method != undefined && _layer.http_method != req.http_method) {
+			if (!_layer.match_method(req.http_method)) {
 				return method({
 					stack_size: stack_size,
 					stack: stack,
@@ -104,10 +104,38 @@ function Route(path) constructor {
 		return self;
 	}
 	
+	/// @desc Add a handler for a HEAD request
+	/// @param {function|array<function>} callback
+	static head = function (callback) {
+		use(callback, "HEAD");
+		return self;
+	}
+	
 	/// @desc Add a handler for a POST request
 	/// @param {function|array<function>} callback
 	static post = function (callback) {
 		use(callback, "POST");
+		return self;
+	}
+	
+	/// @desc Add a handler for a PUT request
+	/// @param {function|array<function>} callback
+	static put = function (callback) {
+		use(callback, "PUT");
+		return self;
+	}
+	
+	/// @desc Add a handler for a PATCH request
+	/// @param {function|array<function>} callback
+	static patch = function (callback) {
+		use(callback, "PATCH");
+		return self;
+	}
+	
+	/// @desc Add a handler for a DELETE request
+	/// @param {function|array<function>} callback
+	static delete_ = function (callback) {
+		use(callback, "DELETE");
 		return self;
 	}
 }

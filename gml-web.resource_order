@@ -20,6 +20,7 @@
     {"name":"http_status_codes","order":1,"path":"scripts/http_status_codes/http_status_codes.yy",},
     {"name":"Response","order":1,"path":"scripts/Response/Response.yy",},
     {"name":"Pair","order":6,"path":"scripts/Pair/Pair.yy",},
+    {"name":"http_remove_duplicate_slashes","order":3,"path":"scripts/http_remove_duplicate_slashes/http_remove_duplicate_slashes.yy",},
     {"name":"Router","order":3,"path":"scripts/Router/Router.yy",},
     {"name":"log","order":2,"path":"scripts/log/log.yy",},
     {"name":"GMServer","order":2,"path":"scripts/GMServer/GMServer.yy",},

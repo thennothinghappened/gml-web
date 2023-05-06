@@ -1,7 +1,8 @@
 /// @param {Id.Buffer} buf
 /// @param {string} ip
+/// @param {Struct.GMServer|undefined} app
 /// @returns {Struct.Request}
-function http_parse_request(buf, ip){
+function http_parse_request(buf, ip, app = undefined){
 	
 	var _text = buffer_read(buf, buffer_text);
 	
@@ -28,7 +29,7 @@ function http_parse_request(buf, ip){
 		body = array_join("", _req);
 	}
 	
-	return new Request(path, http_method, http_version, ip, new Headers(headers), body);
+	return new Request(app, http_remove_duplicate_slashes(path), http_method, http_version, ip, new Headers(headers), body);
 }
 
 /*

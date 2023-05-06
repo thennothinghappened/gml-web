@@ -11,6 +11,7 @@ function http_build_response(http_version, http_status, headers, body = undefine
 	
 	if (body == undefined) {
 		// our response has no body
+		__debug__($"\"{headers_string}\"")
 		var buf = buffer_create(string_byte_length(headers_string), buffer_fixed, 1);
 		buffer_write(buf, buffer_text, headers_string);
 		return buf;
