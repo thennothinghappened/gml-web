@@ -26,12 +26,14 @@ function Response(socket, http_version, send_body = true) constructor {
 	/// @param {Struct.Header} header
 	static set = function (header) {
 		self.headers.set(header);
+		return self;
 	}
 	
 	/// @desc Set the MIME type of the file
 	/// @param {string} mime_type
 	static type = function (mime_type) {
 		self.headers._set_content_type(mime_type);
+		return self;
 	}
 	
 	/// @desc Set HTTP status for the response

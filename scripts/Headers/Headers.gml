@@ -23,6 +23,7 @@ function Headers(headers = []) constructor {
 	/// @desc Add or modify a header
 	/// @param {Struct.Pair} header
 	static set = function (header) {
+		__debug__(header)
 		self._headers[$ string_lower(header.first)] = header.second;
 	}
 	

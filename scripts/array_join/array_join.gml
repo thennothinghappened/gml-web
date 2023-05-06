@@ -4,7 +4,7 @@ function array_join(delimiter, array) {
 	
 	for (var i = 0; i < len; i ++) {
 		str += array[i];
-		if (i < len) {
+		if (i < len - 1) {
 			str += delimiter;
 		}
 	}

@@ -15,6 +15,9 @@ increment_counter = function(req, res) {
 app.get("/counter", get_counter);
 app.post("/counter", increment_counter);
 
+app.route("/counter")
+	.put(function(){});
+
 
 function try_listening() {
 	try {

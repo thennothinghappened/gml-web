@@ -92,6 +92,9 @@ function Route(path) constructor {
 			array_foreach(callback, function(cb) { use(cb); });
 		} else {
 			array_push(self.stack, new Layer(undefined, callback, self, http_method));
+			if (http_method != undefined) {
+				self.methods[$ http_method] = true;
+			}
 		}
 		return self;
 		

@@ -6,6 +6,34 @@ function Router(path) constructor {
 	self.stack = [];
 	
 	/// @ignore
+	/// @param {string} path
+	static _options = function (path) {
+		var stack_size = array_length(self.stack);
+		var methods = [];
+		
+		for (i = 0; i < stack_size; i ++) {
+			var _layer = self.stack[i];
+			
+			if (_layer.path != path) {
+				continue;
+			}
+			
+			if (_layer.http_method == undefined) {
+				if (_layer.route != undefined) {
+					methods = array_union(methods, _layer.route._options(path));
+				}
+				continue;
+			}
+			
+			if (!array_contains(methods, _layer.http_method)) {
+				array_push(methods, _layer.http_method);
+			}
+		}
+		
+		return methods;
+	}
+	
+	/// @ignore
 	/// @desc Handle the route if it belongs to us
 	/// @param {Struct.Request} req
 	/// @param {Struct.Response} res
@@ -16,12 +44,27 @@ function Router(path) constructor {
 			_done(req, res);
 		}
 		
+		// Handle OPTIONS request
+		if (req.http_method == "OPTIONS") {
+			var options = _options(req.path);
+			
+			if (array_length(options) == 0) {
+				return res
+					.status(HTTP_CODE.NOT_FOUND)
+					.finish();
+			}
+			
+			return res
+				.set(new Pair("Allow", array_join(", ", options)))
+				.finish();
+		}
+		
 		/// @param {Struct.Request} req
 		/// @param {Struct.Response} res
 		/// @param {Struct.Exception|undefined} err
 		static next = function (req, res, err = undefined) {
 			
-			// Later allow custom error handler. f\For now we jump to the end.
+			// Later allow custom error handler. For now we jump to the end.
 			if (err != undefined) {
 				return done(req, res, err);
 			}
