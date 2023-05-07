@@ -15,7 +15,7 @@ function http_parse_request(buf, ip, app = undefined){
 	
 	var http_method = _method_string[0];
 	var path = _method_string[1];
-	var http_version = _method_string[2];
+	var http_version = string_split(_method_string[2], "/")[1];
 	
 	var headers = array_map(_headers, function(h) {
 		var split = string_split(h, ": ",, 1);
@@ -29,20 +29,5 @@ function http_parse_request(buf, ip, app = undefined){
 		body = array_join("", _req);
 	}
 	
-	return new Request(app, http_remove_duplicate_slashes(path), http_method, http_version, ip, new Headers(headers), body);
+	return new Request(app, path, http_method, http_version, ip, new Headers(headers), body);
 }
-
-/*
-GET / undefined
-Host: localhost:8080
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/112.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,\*\/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate, br
-DNT: 1
-Connection: keep-alive
-Upgrade-Insecure-Requests: 1
-Sec-Fetch-Dest: document
-Sec-Fetch-Mode: navigate
-Sec-Fetch-Site: cross-site
-*/

@@ -10,7 +10,7 @@
  // middleware (blank 1st argument is global middleware)
  server.get(, function(req, res, next) {
     if (req.type() == "text/html") {
-        res.send($"your IP is <b>{req.ip}</b> <br>");
+        res.write($"your IP is <b>{req.ip}</b> <br>");
     }
     next(req, res);
  });
@@ -20,7 +20,7 @@
 
  // init a route
  server.get("/hello", function(req, res) {
-    res.finish("<h1>Hello!</h1>");
+    res.send("<h1>Hello!</h1>");
  });
 
  // POST route

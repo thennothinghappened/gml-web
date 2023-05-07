@@ -29,6 +29,7 @@
   },
   "resources": [
     {"id":{"name":"Layer","path":"scripts/Layer/Layer.yy",},},
+    {"id":{"name":"http_get_mimetype","path":"scripts/http_get_mimetype/http_get_mimetype.yy",},},
     {"id":{"name":"Route","path":"scripts/Route/Route.yy",},},
     {"id":{"name":"get_time_readable","path":"scripts/get_time_readable/get_time_readable.yy",},},
     {"id":{"name":"Headers","path":"scripts/Headers/Headers.yy",},},

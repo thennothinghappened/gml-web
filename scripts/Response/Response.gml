@@ -30,10 +30,15 @@ function Response(socket, http_version, send_body = true) constructor {
 	}
 	
 	/// @desc Set the MIME type of the file
-	/// @param {string} mime_type
-	static type = function (mime_type) {
-		self.headers._set_content_type(mime_type);
+	/// @param {string} type
+	static set_type = function (type) {
+		self.headers._set_content_type(http_get_mimetype(mime_type));
 		return self;
+	}
+	
+	/// @desc Get the MIME type
+	static get_type = function () {
+		return self.headers.type();
 	}
 	
 	/// @desc Set HTTP status for the response
@@ -45,22 +50,48 @@ function Response(socket, http_version, send_body = true) constructor {
 	
 	/// @desc Append data to the body
 	/// @param {string|Id.Buffer} data
-	static send = function (data) {
-		// Append in string mode
+	static write = function (data) {
+		// Append as string
 		if (is_string(data)) {
 			buffer_write(self.body, buffer_text, data);
 			return self;
 		}
+		
 		// Append as buffer
-		buffer_copy(data, 0, buffer_get_size(data), self.body, buffer_get_size(self.body) + 1);
-		return self;
+		if (buffer_exists(data)) {
+			buffer_copy(data, 0, buffer_get_size(data), self.body, buffer_get_size(self.body) + 1);
+			return self;
+		}
+		
+		// Unsupported data!
+		__fatal__($"Tried to write unsupported data type {typeof(data)}");
+	}
+	
+	/// @desc Send the request with data, auto-setting the MIME type based on the data.
+	/// @param {string|Id.Buffer|Struct} data
+	static send = function (data) {
+		if (is_struct(data)) {
+			return json(data);
+		}
+		
+		var type = "text/html";
+		
+		if (!is_string(data)) {
+			type = "application/octet-stream";
+		}
+		
+		if (get_type() == undefined) {
+			set_type(type);
+		}
+		
+		finish(data);
 	}
 	
 	/// @desc Finish the request and optionally append some data.
 	/// @param {string|Id.Buffer|undefined} data
 	static finish = function (data) {
 		if (data != undefined) {
-			send(data);
+			write(data);
 		}
 		
 		// Remove the excess buffer size we've accumulated in writes
@@ -77,7 +108,9 @@ function Response(socket, http_version, send_body = true) constructor {
 	/// @desc Finish the request with JSON data.
 	/// @param {Struct} data
 	static json = function (data) {
-		type("application/json");
+		if (get_type() == undefined) {
+			set_type("application/json");
+		}
 		finish(json_stringify(data));
 	}
 }

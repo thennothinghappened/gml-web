@@ -3,7 +3,7 @@ app = new GMServer();
 counter = 0;
 
 get_counter = function(req, res) {
-	res.send($"<h1>Counter: {counter}</h1><br>");
+	res.write($"<h1>Counter: {counter}</h1><br>");
 	res.finish("<form method=\"POST\"><input type=\"submit\" value=\"Increment\"></form>");
 }
 
@@ -14,10 +14,6 @@ increment_counter = function(req, res) {
 
 app.get("/counter", get_counter);
 app.post("/counter", increment_counter);
-
-app.route("/counter")
-	.put(function(){});
-
 
 function try_listening() {
 	try {

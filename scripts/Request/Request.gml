@@ -10,7 +10,8 @@
 /// @param {string} body HTTP body
 function Request(app, path, http_method, http_version, ip, headers, body = undefined) constructor {
 	self.app = app;
-	self.path = path;
+	self.path = http_remove_duplicate_slashes(path);
+	
 	self.http_method = http_method;
 	self.http_version = http_version;
 	self.headers = headers;

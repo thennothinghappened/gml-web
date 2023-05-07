@@ -3,15 +3,7 @@
 function Headers(headers = []) constructor {
 	
 	/// @ignore
-	self._headers = {
-		"content-type": "text/html" // default to HTML content
-	};
-	
-	// add the initial headers
-	var headers_len = array_length(headers);
-	for (var i = 0; i < headers_len; i ++) {
-		self._headers[$ string_lower(headers[i].first)] = headers[i].second;
-	}
+	self._headers = {};
 	
 	/// @desc Get a header value by its name
 	/// @param {string} header
@@ -23,7 +15,6 @@ function Headers(headers = []) constructor {
 	/// @desc Add or modify a header
 	/// @param {Struct.Pair} header
 	static set = function (header) {
-		__debug__(header)
 		self._headers[$ string_lower(header.first)] = header.second;
 	}
 	
@@ -61,5 +52,11 @@ function Headers(headers = []) constructor {
 		}
 		
 		return str;
+	}
+	
+	// add the initial headers
+	var headers_len = array_length(headers);
+	for (var i = 0; i < headers_len; i ++) {
+		set(headers[i]);
 	}
 }

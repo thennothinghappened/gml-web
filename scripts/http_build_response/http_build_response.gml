@@ -7,7 +7,7 @@
 function http_build_response(http_version, http_status, headers, body = undefined) {
 	
 	var headers_string = headers.toString();
-	headers_string = $"{http_version} {http_status} {global._HTTP_CODES[http_status]}\r\n{headers_string}\r\n";
+	headers_string = $"HTTP/{http_version} {http_status} {global._HTTP_CODES[http_status]}\r\n{headers_string}\r\n";
 	
 	if (body == undefined) {
 		// our response has no body

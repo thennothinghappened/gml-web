@@ -64,8 +64,21 @@ function GMServer(debug = true) constructor {
 	/// @param {Id.Buffer} data
 	static handle = function (socket, ip, data) {
 		try {
-			var req = http_parse_request(data, ip, self);
-			var res = new Response(socket, req.http_version, req.http_method != "HEAD" && req.http_method != "OPTIONS");
+			var req, res;
+			
+			try {
+				req = http_parse_request(data, ip, self);
+			} catch (err) {
+				// Send back a HTTP 400 as the request was malformed.
+				res = new Response(socket, "0.9", true);
+				buffer_delete(data);
+				
+				return res
+					.status(HTTP_CODE.BAD_REQUEST)
+					.send("<h1>400 Bad Request<h1>");
+			}
+			
+			res = new Response(socket, req.http_version, req.http_method != "HEAD" && req.http_method != "OPTIONS");
 			
 			__info__($"({ip}) {req.http_method} {req.path}");
 			
@@ -76,7 +89,7 @@ function GMServer(debug = true) constructor {
 					
 					return res
 						.status(HTTP_CODE.INTERNAL_SERVER_ERROR)
-						.finish($"<h1>500: Internal Server Error</h1>{debug ? $"GML Error: {err.longMessage}" : ""}");
+						.finish($"<h1>500 Internal Server Error</h1>{debug ? $"GML Error: {err.longMessage}" : ""}");
 				}
 				
 				// Our 404 handler. If we made our way here, then we mustn't have hit any actual pages.

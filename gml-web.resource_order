@@ -12,6 +12,7 @@
   ],
   "ResourceOrderSettings": [
     {"name":"Layer","order":5,"path":"scripts/Layer/Layer.yy",},
+    {"name":"http_get_mimetype","order":4,"path":"scripts/http_get_mimetype/http_get_mimetype.yy",},
     {"name":"Route","order":4,"path":"scripts/Route/Route.yy",},
     {"name":"get_time_readable","order":1,"path":"scripts/get_time_readable/get_time_readable.yy",},
     {"name":"Headers","order":2,"path":"scripts/Headers/Headers.yy",},
