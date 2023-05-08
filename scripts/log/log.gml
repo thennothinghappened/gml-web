@@ -1,12 +1,9 @@
 /// @ignore
-global._server_log_levels = ["debug", "info", "error", "fatal"];
-#macro log_levels global._server_log_levels
-
-/// @ignore
 /// @param {string} msg Message
 /// @param {real} level Log level (0 <-> 3)
 function __log_format__(msg, level) {
-	return $"[{get_datetime_readable()}] [{log_levels[level]}] {msg}";
+	static _server_log_levels = ["debug", "info", "error", "fatal"];
+	return $"[{get_datetime_readable()}] [{_server_log_levels[level]}] {msg}";
 }
 
 /// @ignore
