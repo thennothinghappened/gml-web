@@ -194,24 +194,32 @@ function GMServer(debug = true) constructor {
 	/// @desc Serve static files from a directory. use() after other routes to avoid disk access when not required.
 	/// @param {string} path Path that files will be served from
 	/// @param {bool} dir_view Whether or not to use the directory viewer (you probably don't need it!)
-	static static_content = function (path = "/web_root", dir_view = false) {
-		return method({ serve_path: path, dir_view: dir_view }, function (req, res, next) {
+	/// @param {function} dir_renderer How to render the directory viewer
+	static static_content = function (path = "/web_root", dir_view = false, dir_renderer = function (list, req, res) {
+		var list_str = "";
+		var list_len = array_length(list);
+		
+		for (var i = 0; i < list_len; i ++) {
+			list_str += $"<li><a href=\"./{list[i]}\">{list[i]}</a></li>";
+		}
+		
+		return res.send($"<!DOCTYPE html><html><head><title>Directory listing for {req.url}</title></head><body><h1>Directory listing for {req.url}</h1><hr><ul>{list_str}</ul></body></html>");
+	}) {
+		return method({ serve_path: path, dir_view: dir_view, dir_renderer: dir_renderer }, function (req, res, next) {
 			// We take next() in case of a miss.
 			
 			// Hacky way to prevent directory traversal... Mignt not be super reliable but above all else all reads
 			// will still be contained to working_directory.
-			var path = http_strip_double_dots(http_remove_duplicate_slashes(working_directory + serve_path + req.path));
+			var path = http_strip_double_dots(working_directory + serve_path + req.path);
 			
 			// Weird workaround stuff for how GM handles directories.
 			var dir_exists = directory_exists(path);
-			__debug__(path);
+			
 			// Serve index.html if it exists
 			if (dir_exists && file_exists(path + "/index.html")) {
 				path += "/index.html";
 				dir_exists = false;
 			}
-			
-			__debug__(path);
 			
 			// Serve a file
 			if (file_exists(path) && !dir_exists) {
@@ -229,18 +237,28 @@ function GMServer(debug = true) constructor {
 			
 			// Serve the directory view if enabled
 			if (dir_view && dir_exists) {
-				var list = "";
+				path += "/";
+				var list = [];
+				
+				// Add option to go up if we aren't at the root.
+				if (string_count("/", req.path) > 1) {
+					array_push(list, "../");
+				}
+				
 				var fname = file_find_first(path + "/*", fa_none);
 				
 				while (fname != "") {
 					// Later here we'll have file type exclusions and such
-					list += $"<li><a href=\"./{fname}\">{fname}</a></li>";
+					var trailing_slash = directory_exists($"{path}/{fname}") ? "/" : "";
+					array_push(list, fname + trailing_slash);
+					
 					fname = file_find_next();
 				}
 				
 				file_find_close();
 				
-				return res.send($"<!DOCTYPE html><html><head><title>Directory listing for {req.url}</title></head><body><h1>Directory listing for {req.url}</h1><hr><ul>{list}</ul></body></html>");
+				return dir_renderer(list, req, res);
+				
 			}
 			
 			next(req, res);

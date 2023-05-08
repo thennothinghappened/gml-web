@@ -23,12 +23,18 @@ function Request(data, ip, app) constructor {
 	self.http_method = _method_string[0];
 	
 	// Full URL with query string attached
-	self.original_url = http_decode_characters(_method_string[1]);
+	self.original_url = http_fix_backslashes(http_decode_characters(_method_string[1]));
 	self.http_version = string_split(_method_string[2], "/")[1];
 	
-	// Parse the path
+	// Parse the path and remove trailing slashes
 	var path_and_query = string_split(_method_string[1], "?",, 1);
-	self.path = http_decode_characters(path_and_query[0]);
+	self.path = string_trim_end(
+		http_remove_duplicate_slashes(
+			http_fix_backslashes(
+				http_decode_characters(path_and_query[0])
+			), ["/"]
+		)
+	);
 	
 	// Full URL without mountpoint stripping from routes
 	self.url = self.path;
