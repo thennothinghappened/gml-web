@@ -81,7 +81,10 @@ function Router() constructor {
 				return done(req, res, err);
 			}
 			
-			req.path = http_remove_first_level(req.path);
+			// If the layer has a specific mountpoint, remove it from the path
+			if (_layer.path != undefined) {
+				req.path = string_trim_start(req.path, [_layer.path]);
+			}
 			
 			_layer.handle_request(req, res, method({
 				stack_size: stack_size,
