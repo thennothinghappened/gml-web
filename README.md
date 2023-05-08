@@ -9,9 +9,7 @@
 
  // middleware (blank 1st argument is global middleware)
  server.get(, function(req, res, next) {
-    if (req.type() == "text/html") {
-        res.write($"your IP is <b>{req.ip}</b> <br>");
-    }
+    res.write($"your IP is <b>{req.ip}</b> <br>");
     next(req, res);
  });
  
