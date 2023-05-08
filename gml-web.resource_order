@@ -24,6 +24,7 @@
     {"name":"Response","order":1,"path":"scripts/Response/Response.yy",},
     {"name":"Pair","order":6,"path":"scripts/Pair/Pair.yy",},
     {"name":"string_array","order":4,"path":"scripts/string_array/string_array.yy",},
+    {"name":"http_strip_double_dots","order":7,"path":"scripts/http_strip_double_dots/http_strip_double_dots.yy",},
     {"name":"http_remove_duplicate_slashes","order":3,"path":"scripts/http_remove_duplicate_slashes/http_remove_duplicate_slashes.yy",},
     {"name":"Router","order":3,"path":"scripts/Router/Router.yy",},
     {"name":"log","order":2,"path":"scripts/log/log.yy",},

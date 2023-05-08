@@ -41,6 +41,7 @@
     {"id":{"name":"Response","path":"scripts/Response/Response.yy",},},
     {"id":{"name":"Pair","path":"scripts/Pair/Pair.yy",},},
     {"id":{"name":"string_array","path":"scripts/string_array/string_array.yy",},},
+    {"id":{"name":"http_strip_double_dots","path":"scripts/http_strip_double_dots/http_strip_double_dots.yy",},},
     {"id":{"name":"http_remove_duplicate_slashes","path":"scripts/http_remove_duplicate_slashes/http_remove_duplicate_slashes.yy",},},
     {"id":{"name":"oServer","path":"objects/oServer/oServer.yy",},},
     {"id":{"name":"Router","path":"scripts/Router/Router.yy",},},

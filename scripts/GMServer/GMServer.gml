@@ -2,7 +2,7 @@ function GMServer(debug = true) constructor {
 	/// @ignore
 	self._server = undefined;
 	/// @ignore
-	self._router = new Router("/");
+	self._router = new Router();
 	
 	self.debug = debug;
 	
@@ -189,5 +189,61 @@ function GMServer(debug = true) constructor {
 			
 			next(req, res);
 		}
+	}
+	
+	/// @desc Serve static files from a directory. use() after other routes to avoid disk access when not required.
+	/// @param {string} path Path that files will be served from
+	/// @param {bool} dir_view Whether or not to use the directory viewer (you probably don't need it!)
+	static static_content = function (path = "/web_root", dir_view = false) {
+		return method({ serve_path: path, dir_view: dir_view }, function (req, res, next) {
+			// We take next() in case of a miss.
+			
+			// Hacky way to prevent directory traversal... Mignt not be super reliable but above all else all reads
+			// will still be contained to working_directory.
+			var path = http_strip_double_dots(http_remove_duplicate_slashes(working_directory + serve_path + req.path));
+			
+			// Weird workaround stuff for how GM handles directories.
+			var dir_exists = directory_exists(path);
+			__debug__(path);
+			// Serve index.html if it exists
+			if (dir_exists && file_exists(path + "/index.html")) {
+				path += "/index.html";
+				dir_exists = false;
+			}
+			
+			__debug__(path);
+			
+			// Serve a file
+			if (file_exists(path) && !dir_exists) {
+				var buf = buffer_load(path);
+				
+				// Set MIME type based on the extension...
+				// Maybe later use magic bytes but that's more complex. (maybe outsource to "file")
+				res.set_type(http_get_mimetype(filename_ext(path)));
+				
+				res.finish(buf);
+				buffer_delete(buf);
+				
+				return;
+			}
+			
+			// Serve the directory view if enabled
+			if (dir_view && dir_exists) {
+				var list = "";
+				var fname = file_find_first(path + "/*", fa_none);
+				
+				while (fname != "") {
+					// Later here we'll have file type exclusions and such
+					list += $"<li><a href=\"./{fname}\">{fname}</a></li>";
+					fname = file_find_next();
+				}
+				
+				file_find_close();
+				
+				return res.send($"<!DOCTYPE html><html><head><title>Directory listing for {req.url}</title></head><body><h1>Directory listing for {req.url}</h1><hr><ul>{list}</ul></body></html>");
+			}
+			
+			next(req, res);
+		});
 	}
 }

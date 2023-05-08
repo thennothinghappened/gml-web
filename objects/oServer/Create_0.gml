@@ -14,6 +14,7 @@ increment_counter = function(req, res) {
 
 app.get("/counter", get_counter);
 app.post("/counter", increment_counter);
+app.use(, app.static_content(, true));
 
 function try_listening() {
 	try {
