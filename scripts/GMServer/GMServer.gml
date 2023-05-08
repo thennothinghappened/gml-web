@@ -67,10 +67,12 @@ function GMServer(debug = true) constructor {
 			var req, res;
 			
 			try {
-				req = http_parse_request(data, ip, self);
+				req = new Request(data, ip, self);
 			} catch (err) {
+				__error__(err);
+				
 				// Send back a HTTP 400 as the request was malformed.
-				res = new Response(socket, "0.9", true);
+				res = new Response(socket, "1.1", true);
 				buffer_delete(data);
 				
 				return res
@@ -89,7 +91,7 @@ function GMServer(debug = true) constructor {
 					
 					return res
 						.status(HTTP_CODE.INTERNAL_SERVER_ERROR)
-						.finish($"<h1>500 Internal Server Error</h1>{debug ? $"GML Error: {err.longMessage}" : ""}");
+						.finish($"<h1>500 Internal Server Error</h1>{debug ? $"GML Error: <pre>{err.longMessage}</pre>" : ""}");
 				}
 				
 				// Our 404 handler. If we made our way here, then we mustn't have hit any actual pages.

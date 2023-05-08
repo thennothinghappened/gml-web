@@ -3,7 +3,7 @@ app = new GMServer();
 counter = 0;
 
 get_counter = function(req, res) {
-	res.write($"<h1>Counter: {counter}</h1><br>");
+	res.write($"<h1>{req.query[$ "counter_name"] ?? "Counter"}: {counter}</h1><br>");
 	res.finish("<form method=\"POST\"><input type=\"submit\" value=\"Increment\"></form>");
 }
 

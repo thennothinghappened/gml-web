@@ -1,11 +1,11 @@
 {
   "resourceType": "GMScript",
   "resourceVersion": "1.0",
-  "name": "http_parse_request",
+  "name": "string_array",
   "isCompatibility": false,
   "isDnD": false,
   "parent": {
-    "name": "http",
-    "path": "folders/Scripts/http.yy",
+    "name": "util",
+    "path": "folders/Scripts/util.yy",
   },
 }

@@ -7,7 +7,7 @@ function __log_format__(msg, level) {
 }
 
 /// @ignore
-/// @param {string} msg Message
+/// @param {*} msg Message
 /// @return {bool}
 function __debug__(msg) {
 	show_debug_message(__log_format__(msg, 0));
@@ -15,7 +15,7 @@ function __debug__(msg) {
 }
 
 /// @ignore
-/// @param {string} msg Message
+/// @param {*} msg Message
 /// @return {bool}
 function __info__(msg) {
 	show_debug_message(__log_format__(msg, 1));
@@ -23,7 +23,7 @@ function __info__(msg) {
 }
 	
 /// @ignore
-/// @param {string} msg Message
+/// @param {*} msg Message
 /// @return {bool}
 function __error__(msg) {
 	show_debug_message(__log_format__(msg, 2));
@@ -31,8 +31,8 @@ function __error__(msg) {
 }
 
 /// @ignore
-/// @param {string} msg Message
+/// @param {*} msg Message
 function __fatal__(msg) {
 	show_debug_message(__log_format__(msg, 3));
-	throw "FATAL! " + msg;
+	throw $"FATAL! {msg}";
 }
