@@ -7,7 +7,7 @@ function Response(socket, http_version, send_body = true) constructor {
 	/// @ignore
 	self.headers = new Headers();
 	/// @ignore
-	self.body = buffer_create(1, buffer_grow, 1);
+	self.body = buffer_create(0, buffer_grow, 1);
 	/// @ignore
 	self.http_status = HTTP_CODE.OK;
 	/// @ignore
@@ -59,7 +59,16 @@ function Response(socket, http_version, send_body = true) constructor {
 		
 		// Append as buffer
 		if (buffer_exists(data)) {
-			buffer_copy(data, 0, buffer_get_size(data), self.body, buffer_get_size(self.body) + 1);
+			// Make room in the body buffer for the new data
+			var append_size = buffer_get_size(data);
+			var tell_pos = buffer_tell(body);
+			
+			buffer_resize(self.body, buffer_get_size(self.body) + append_size);
+			buffer_copy(data, 0, append_size, self.body, tell_pos);
+			
+			// Seek to the new end pos so later writes don't write over us!
+			buffer_seek(self.body, buffer_seek_end, 0);
+			
 			return self;
 		}
 		
