@@ -31,7 +31,7 @@ function Response(socket, http_version, send_body = true) constructor {
 	
 	/// @desc Set the MIME type of the file
 	/// @param {string} type
-	static set_type = function (type) {
+	static set_type = function (mime_type) {
 		self.headers._set_content_type(http_get_mimetype(mime_type));
 		return self;
 	}
@@ -102,6 +102,10 @@ function Response(socket, http_version, send_body = true) constructor {
 		network_send_raw(self.socket, buf, buffer_get_size(buf));
 		
 		buffer_delete(buf);
+		
+		// We don't need the body anymore since the request was sent
+		buffer_delete(self.body);
+		self.body = undefined;
 		
 	}
 	
