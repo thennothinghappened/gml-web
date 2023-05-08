@@ -34,6 +34,7 @@
     {"id":{"name":"get_time_readable","path":"scripts/get_time_readable/get_time_readable.yy",},},
     {"id":{"name":"Headers","path":"scripts/Headers/Headers.yy",},},
     {"id":{"name":"http_build_response","path":"scripts/http_build_response/http_build_response.yy",},},
+    {"id":{"name":"http_remove_first_level","path":"scripts/http_remove_first_level/http_remove_first_level.yy",},},
     {"id":{"name":"array_join","path":"scripts/array_join/array_join.yy",},},
     {"id":{"name":"http_decode_chars","path":"scripts/http_decode_chars/http_decode_chars.yy",},},
     {"id":{"name":"http_status_codes","path":"scripts/http_status_codes/http_status_codes.yy",},},

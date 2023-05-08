@@ -89,7 +89,7 @@ function Route(path) constructor {
 	/// @param {string|undefined} http_method
 	static use = function (callback, http_method = undefined) {
 		if (is_array(callback)) {
-			array_foreach(callback, function(cb) { use(cb); });
+			array_foreach(callback, method({ http_method: http_method }, function(cb) { use(cb, http_method); }));
 		} else {
 			array_push(self.stack, new Layer(undefined, callback, self, http_method));
 			if (http_method != undefined) {

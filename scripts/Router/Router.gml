@@ -1,13 +1,12 @@
-/// @param {string} path
-function Router(path) constructor {
-	self.path = path;
+
+function Router() constructor {
 	// The stack is an array of Layers which is run through.
 	// Each layer gets a chance to run through its code, pass to the next, or stop execution.
 	self.stack = [];
 	
 	/// @ignore
 	/// @param {string} path
-	static _options = function (path) {
+	_options = function (path) {
 		var stack_size = array_length(self.stack);
 		var methods = [];
 		
@@ -33,16 +32,11 @@ function Router(path) constructor {
 		return methods;
 	}
 	
-	/// @ignore
 	/// @desc Handle the route if it belongs to us
 	/// @param {Struct.Request} req
 	/// @param {Struct.Response} res
 	/// @param {Function} _done
-	static dispatch = function (req, res, _done) {
-		
-		if (!string_starts_with(req.path, self.path)) {
-			_done(req, res);
-		}
+	dispatch = function (req, res, _done) {
 		
 		// Handle OPTIONS request
 		if (req.http_method == "OPTIONS") {
@@ -87,6 +81,8 @@ function Router(path) constructor {
 				return done(req, res, err);
 			}
 			
+			req.path = http_remove_first_level(req.path);
+			
 			_layer.handle_request(req, res, method({
 				stack_size: stack_size,
 				stack: stack,
@@ -127,7 +123,7 @@ function Router(path) constructor {
 	/// @param {string|undefined} http_method
 	static use = function (path = undefined, callback, http_method = undefined) {
 		if (is_array(callback)) {
-			array_foreach(callback, function(cb) { use(cb); });
+			array_foreach(callback, method({ path: path, http_method: http_method }, function(cb) { use(path, cb, http_method); }));
 		} else {
 			array_push(self.stack, new Layer(path, callback, self, http_method));
 		}

@@ -21,12 +21,18 @@ function Request(data, ip, app) constructor {
 	var _method_string = string_split(array_shift(_headers), " ");
 	
 	self.http_method = _method_string[0];
-	self.original_path = http_decode_characters(_method_string[1]);
+	
+	// Full URL with query string attached
+	self.original_url = http_decode_characters(_method_string[1]);
 	self.http_version = string_split(_method_string[2], "/")[1];
 	
 	// Parse the path
 	var path_and_query = string_split(_method_string[1], "?",, 1);
 	self.path = http_decode_characters(path_and_query[0]);
+	
+	// Full URL without mountpoint stripping from routes
+	self.url = self.path;
+	
 	self.query = {};
 	
 	// Parse the query string if it exists
@@ -52,15 +58,21 @@ function Request(data, ip, app) constructor {
 	
 	self.headers = new Headers(_headers_split);
 	
-	var body = undefined;
+	// If we're on HTTP/1.1 we need a Host header
+	if (real(self.http_version) >= 1.1 && self.headers.get("Host") == undefined) {
+		throw "No Host header on HTTP 1.1+ request.";
+	}
+	
+	self.hostname = (real(self.http_version) >= 1.1 ? self.headers.get("Host") : undefined);
+	
+	// Get the body
+	self._body = undefined;
 	
 	// The only methods which have bodies all start with P!
 	if (string_starts_with(http_method, "P")) {
 		self._body = array_join("", _req);
 	}
 	
-	/// @ignore
-	self._body = body;
 	self.body = undefined;
 	
 	static type = function () {

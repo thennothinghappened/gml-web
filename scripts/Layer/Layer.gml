@@ -12,7 +12,11 @@ function Layer(path, func, route = undefined, http_method = undefined) construct
 	/// @param {string} path
 	/// @param {string} http_method
 	static match = function (path, http_method) {
-		return (path == self.path || self.path == undefined) && match_method(http_method);
+		return (
+			self.path == undefined ||
+			path == self.path ||
+			string_starts_with(path, self.path + "/")
+		) && match_method(http_method);
 	}
 	
 	/// @desc Match if the method is ours
@@ -31,7 +35,7 @@ function Layer(path, func, route = undefined, http_method = undefined) construct
 	/// @param {function} next
 	static handle_request = function (req, res, next) {
 		try {
-			self.handle(req, res, next);
+			handle(req, res, next);
 		} catch(err) {
 			next(req, res, err);
 		}
